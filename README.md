@@ -4,9 +4,9 @@
 
 It's just a simple dummy API.
 
-Data: [faker|https://github.com/faker-ruby/faker]
+Data: [faker](https://github.com/faker-ruby/faker)
 
-Framework: [sinatra|https://github.com/sinatra/sinatra]
+Framework: [sinatra](https://github.com/sinatra/sinatra)
 
 Format: JSON
 
