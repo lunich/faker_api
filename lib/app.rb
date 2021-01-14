@@ -41,7 +41,9 @@ before do
 end
 
 get '/' do
-  json name: 'Faker API', version: '0.0.1', description: 'API for my cat to learn'
+  json name: 'Faker API',
+       version: '0.0.1',
+       description: 'API for my cat to learn'
 end
 
 get '/api/users' do
