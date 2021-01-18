@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 Bundler.require
 
+DEFAULT_USERS = 15
+
 def user(id:)
   images = %w[cat fox bear dog]
   img = "/img/#{images.sample(random: $RANDOM)}.jpg"
@@ -22,6 +24,13 @@ def generate_users(count:)
   count.times.map do |i|
     user(id: i + 1)
   end
+end
+
+def user_response(id:)
+  users = generate_users(count: [DEFAULT_USERS, id].max)
+  {
+    result: users[id - 1]
+  }
 end
 
 def users_response(count: 15, page: 1, per_page: 5)
@@ -51,9 +60,13 @@ end
 get '/api/users' do
   page = (params[:page] || '1').to_i
   per_page = (params[:per_page] || '5').to_i
-  count = (params[:count] || '15').to_i
+  count = (params[:count] || DEFAULT_USERS).to_i
 
   response = users_response(count: count, page: page, per_page: per_page)
 
   json response
+end
+
+get '/api/users/:id' do
+  json user_response(id: params[:id].to_i)
 end
