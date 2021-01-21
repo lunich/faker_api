@@ -7,16 +7,25 @@ DEFAULT_USERS = 15
 def user(id:)
   images = %w[cat fox bear dog]
   img = "/img/#{images.sample(random: $RANDOM)}.jpg"
+  name = Faker::Name.name
   {
     id: id,
     followed: Faker::Boolean.boolean,
-    name: Faker::Name.name,
+    name: name,
     img: img,
     status: Faker::Lorem.words(number: 3..6).join(' '),
     location: {
       city: Faker::Address.city,
       country: Faker::Address.country
-    }
+    },
+    description: Faker::Lorem.paragraph,
+    contacts: {
+      facebook: Faker::Internet.username(specifier: name),
+      twitter: Faker::Internet.username(specifier: name),
+      instagram: Faker::Internet.username(specifier: name),
+      email: Faker::Internet.free_email(name: name)
+    },
+    profession: Faker::IndustrySegments.sector
   }
 end
 
@@ -36,8 +45,9 @@ end
 def users_response(count: 15, page: 1, per_page: 5)
   users = generate_users(count: count)
   offset = per_page * (page - 1)
+  result = users[offset, per_page] || []
   {
-    result: users[offset, per_page] || [],
+    result: result.map { |u| u.slice(:id, :followed, :name, :img, :status, :location) },
     count: count,
     per_page: per_page
   }
