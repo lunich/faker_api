@@ -64,6 +64,8 @@ def create_user_response(user:)
   errors = []
   errors << 'name-is-blank' if blank?(user[:name])
   errors << 'email-is-blank' if blank?(user[:email])
+  errors << 'password-is-blank' if blank?(user[:password])
+  errors << 'password-is-not-confirmed' if user[:password_confirmation] != user[:password]
 
   user = {
     id: errors.empty? ? DEFAULT_USERS + 1 : nil,
@@ -122,5 +124,6 @@ end
 
 post '/api/users' do
   data = JSON.parse(request.body.read, symbolize_names: true)
-  json create_user_response(user: data[:user] || {})
+  response = create_user_response(user: data[:user] || {})
+  json response, status: (response[:status] == :success ? 201 : 422)
 end
