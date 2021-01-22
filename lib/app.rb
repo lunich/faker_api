@@ -4,15 +4,18 @@ Bundler.require
 
 DEFAULT_USERS = 15
 
-def user(id:)
+def user_image
   images = %w[cat fox bear dog]
-  img = "/img/#{images.sample(random: $RANDOM)}.jpg"
+  "/img/#{images.sample(random: $RANDOM)}.jpg"
+end
+
+def user(id:)
   name = Faker::Name.name
   {
     id: id,
     followed: Faker::Boolean.boolean,
     name: name,
-    img: img,
+    img: user_image,
     status: Faker::Lorem.words(number: 3..6).join(' '),
     location: {
       city: Faker::Address.city,
@@ -53,6 +56,42 @@ def users_response(count: 15, page: 1, per_page: 5)
   }
 end
 
+def blank?(string)
+  string.nil? || string == ''
+end
+
+def create_user_response(user:)
+  errors = []
+  errors << 'name-is-blank' if blank?(user[:name])
+  errors << 'email-is-blank' if blank?(user[:email])
+
+  user = {
+    id: errors.empty? ? DEFAULT_USERS + 1 : nil,
+    followed: false,
+    name: user[:name],
+    img: user_image,
+    status: user[:status],
+    location: {
+      city: user[:city],
+      country: user[:country]
+    },
+    description: user[:description],
+    contacts: {
+      facebook: user[:facebook],
+      twitter: user[:twitter],
+      instagram: user[:instagram],
+      email: user[:email]
+    },
+    profession: user[:profession]
+  }
+
+  {
+    status: errors.empty? ? :success : :failed,
+    errors: errors,
+    result: user
+  }
+end
+
 before do
   # Setup random config
   $RANDOM = Random.new(42)
@@ -79,4 +118,9 @@ end
 
 get '/api/users/:id' do
   json user_response(id: params[:id].to_i)
+end
+
+post '/api/users' do
+  data = JSON.parse(request.body.read, symbolize_names: true)
+  json create_user_response(user: data[:user] || {})
 end

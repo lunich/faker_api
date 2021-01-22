@@ -25,6 +25,16 @@ bundle exec rerun ruby lib/app.rb
 
 **Note:** Server is starting on port 4567 by default
 
+## Test it
+
+```sh
+curl \
+  -H 'Accept: application/json' \
+  -H 'Content-type: application/json' \
+  -d '{"user":{"name":"Dima Lunich","email":"dima.lunich@gmail.com"}}' \
+  http://localhost:4567/api/users
+```
+
 ## API
 
 TBD
