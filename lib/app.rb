@@ -94,6 +94,23 @@ def create_user_response(user:)
   }
 end
 
+def create_session_response(email:, password:)
+  users = generate_users(count: DEFAULT_USERS)
+
+  user = users.detect { |u| u[:contacts][:email] == email }
+
+  errors = []
+  errors << 'user-not-found' if user.nil?
+  errors << 'password-is-invalid' if user && email != password
+  token = Digest::MD5.hexdigest(email) if user
+
+  {
+    status: errors.empty? ? :success : :failed,
+    errors: errors,
+    result: errors.empty? ? { user: user, token: token } : nil
+  }
+end
+
 before do
   # Setup random config
   $RANDOM = Random.new(42)
@@ -125,5 +142,11 @@ end
 post '/api/users' do
   data = JSON.parse(request.body.read, symbolize_names: true)
   response = create_user_response(user: data[:user] || {})
+  json response, status: (response[:status] == :success ? 201 : 422)
+end
+
+post '/api/session' do
+  data = JSON.parse(request.body.read, symbolize_names: true)
+  response = create_session_response(email: data[:session][:email], password: data[:session][:password])
   json response, status: (response[:status] == :success ? 201 : 422)
 end
