@@ -150,3 +150,12 @@ post '/api/session' do
   response = create_session_response(email: data[:session][:email], password: data[:session][:password])
   json response, status: (response[:status] == :success ? 201 : 422)
 end
+
+delete '/api/session' do
+  response = {
+    status: :success,
+    errors: [],
+    result: {},
+  }
+  json response, status: 200
+end
