@@ -117,6 +117,13 @@ before do
   Faker::Config.random = $RANDOM
   # Make it possible to be used from any hostname
   headers['Access-Control-Allow-Origin'] = '*'
+  headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+  headers['Access-Control-Request-Method'] = '*'
+  headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+
+  if request.request_method == 'OPTIONS'
+    halt 200
+  end
 end
 
 get '/' do
