@@ -20,7 +20,7 @@ cd app
 # Install prerequirements
 bundle install
 # Start the server
-bundle exec rerun ruby lib/app.rb
+bundle exec puma -C config/puma.rb
 ```
 
 **Note:** Server is starting on port 4567 by default
