@@ -32,7 +32,21 @@ curl \
   -H 'Accept: application/json' \
   -H 'Content-type: application/json' \
   -d '{"user":{"name":"Dima Lunich","email":"dima.lunich@gmail.com"}}' \
-  http://localhost:4567/api/users
+  http://localhost:9292/api/users
+```
+
+## Docker
+
+Build an image:
+
+```sh
+docker build -t fakerapi:latest .
+```
+
+Run a container to be able to use the app on `http://127.0.0.1:9292` (remove once terminated):
+
+```sh
+docker run --rm -p 9292:9292 fakerapi:latest
 ```
 
 ## API
