@@ -3,12 +3,25 @@
 
 Bundler.require
 
+require 'sinatra/custom_logger'
+require 'logger'
+
 class App < Sinatra::Base
   DEFAULT_USERS = 15
+  RANDOM_SEED = 43
+
+  helpers Sinatra::CustomLogger
+
+  configure :development, :production do
+    logger = Logger.new($stdout)
+    logger.level = Logger::DEBUG if development?
+    use Rack::CommonLogger, logger
+    set :logger, logger
+   end
 
   before do
     # Setup random config
-    $RANDOM = Random.new(42)
+    $RANDOM = Random.new(RANDOM_SEED)
     Faker::Config.random = $RANDOM
     # Make it possible to be used from any hostname
     headers['Access-Control-Allow-Origin'] = '*'
