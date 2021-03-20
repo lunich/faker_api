@@ -1,0 +1,3 @@
+#!/bin/sh
+
+docker image build --tag=fakerapi:latest --tag=fakerapi:$(git rev-parse HEAD) .
